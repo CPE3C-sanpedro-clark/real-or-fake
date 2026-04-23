@@ -1,17 +1,17 @@
-/* DBCONFIG.JS - DATABASE CONFIGURATION FOR RAILWAY */
+/* DBCONFIG.JS - DATABASE CONFIGURATION FOR HOSTINGER */
 
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Railway provides these specific variable names for MySQL
+// Hostinger uses standard localhost MySQL connection
 const dbConfig = {
-    host: process.env.MYSQLHOST || process.env.DB_HOST || 'localhost',
-    user: process.env.MYSQLUSER || process.env.DB_USER || 'root',
-    password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD,
-    database: process.env.MYSQLDATABASE || process.env.DB_NAME || 'realDB',
-    port: parseInt(process.env.MYSQLPORT || process.env.DB_PORT || '3306'),
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'realDB',
+    port: parseInt(process.env.DB_PORT || '3306'),
     charset: 'utf8mb4',
     waitForConnections: true,
     connectionLimit: 10,
