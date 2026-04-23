@@ -1,30 +1,48 @@
-/* MIDDLEWARE/AUTH.JS - JWT TOKEN VERIFICATION */
+/* MIDDLEWARE/AUTH.JS - JWT TOKEN VERIFICATION WITH SESSION HANDLING */
 
 import jwt from 'jsonwebtoken';
 import config from '../config.js';
+import Session from '../models/Session.js';
 
-export default function authMiddleware(req, res, next) {
+export default async function authMiddleware(req, res, next) {
     const authHeader = req.headers.authorization;
 
-    // Check if authorization header exists and has Bearer scheme
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({ error: 'no token provided' });
     }
 
-    // Extract token from "Bearer <token>" format
     const token = authHeader.split(' ')[1];
+    
+    // Get session token from header (optional)
+    const sessionToken = req.headers['x-session-token'];
 
     try {
-        // Verify token
         const decoded = jwt.verify(token, config.JWT_SECRET);
-
-        // Check if the user has passed 2FA and is marked as active
-        if (decoded.two_factor_enabled && !decoded.two_factor_passed) {
-            return res.status(403).json({ error: '2FA pending' });
-        }
-
-        // Attach user info to request for use in route handlers
+        
         req.user = decoded;
+        
+        // Handle session if provided
+        if (sessionToken) {
+            const session = await Session.getActiveSession(sessionToken);
+            if (session && session.user_id === decoded.id) {
+                req.session = session;
+                // Update last activity
+                await Session.updateActivity(session.id);
+            } else if (sessionToken && !session) {
+                // Session expired or invalid
+                console.log(`Invalid or expired session token: ${sessionToken}`);
+            }
+        }
+        
+        // If no session token but user is authenticated, create a new session
+        if (!sessionToken && !req.session) {
+            const ipAddress = req.ip || req.connection.remoteAddress;
+            const userAgent = req.headers['user-agent'];
+            const session = await Session.create(decoded.id, null, ipAddress, userAgent);
+            req.session = session;
+            // Set response header to return new session token to client
+            res.setHeader('X-Session-Token', session.sessionToken);
+        }
 
         next();
     } catch (err) {

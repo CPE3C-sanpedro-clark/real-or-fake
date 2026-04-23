@@ -364,3 +364,184 @@
   border: 1px solid rgba(251, 191, 36, 0.2);
   color: #fbbf24;
 }
+
+/* Assessment score */
+.assessment-score {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.score-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.score-value {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.score-value.risk-low {
+  color: #4ade80;
+}
+
+.score-value.risk-moderate {
+  color: #fbbf24;
+}
+
+.score-value.risk-high {
+  color: #f97316;
+}
+
+.score-value.risk-very-high {
+  color: #ef4444;
+}
+
+/* Breakdown mini */
+.breakdown-mini {
+  margin: 8px 0;
+}
+
+.breakdown-mini details {
+  cursor: pointer;
+}
+
+.breakdown-mini summary {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 4px 0;
+}
+
+.breakdown-details {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  font-size: 11px;
+}
+
+.breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.breakdown-item:last-child {
+  border-bottom: none;
+}
+
+/* Risk classes for fake score fill */
+.fake-score-fill.risk-low {
+  background: #4ade80;
+}
+
+.fake-score-fill.risk-moderate {
+  background: #fbbf24;
+}
+
+.fake-score-fill.risk-high {
+  background: #f97316;
+}
+
+.fake-score-fill.risk-very-high {
+  background: #ef4444;
+}
+
+/* Fact checks tab */
+.factchecks-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.factcheck-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.factcheck-card h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.factcheck-item {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.factcheck-item:last-child {
+  border-bottom: none;
+}
+
+.factcheck-claim {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.factcheck-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.factcheck-publisher {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.factcheck-verdict {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.factcheck-verdict.true {
+  background: rgba(74, 222, 128, 0.1);
+  color: #4ade80;
+}
+
+.factcheck-verdict.false {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.factcheck-verdict.mostly_false,
+.factcheck-verdict.partly_false {
+  background: rgba(251, 191, 36, 0.1);
+  color: #fbbf24;
+}
+
+.factcheck-link {
+  font-size: 11px;
+  color: #60a5fa;
+  text-decoration: none;
+}
+
+.factcheck-link:hover {
+  text-decoration: underline;
+}
+
+.empty-hint {
+  margin-top: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.assessment-bar {
+  flex-wrap: wrap;
+  gap: 12px;
+}

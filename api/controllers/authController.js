@@ -3,6 +3,8 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import Session from '../models/Session.js';
+import Activity from '../models/Activity.js';
 import config from '../config.js';
 
 // POST /api/auth/register - Register new user
@@ -50,9 +52,27 @@ export async function register(req, res) {
             { expiresIn: config.JWT_EXPIRES_IN }
         );
 
+        // Create session for the new user
+        const ipAddress = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress;
+        const userAgent = req.headers['user-agent'];
+        const session = await Session.create(newUser.id, 'Initial Session', ipAddress, userAgent);
+
+        // Log registration activity - using a placeholder query_text since this is not a search
+        await Activity.log({
+            userId: newUser.id,
+            sessionId: session.id,
+            activityType: 'search',
+            queryText: `user_registration: ${username}`, // Added non-null query_text
+            metadata: { 
+                action: 'register',
+                timestamp: new Date().toISOString()
+            }
+        });
+
         res.status(201).json({
             message: 'user registered successfully',
             token,
+            sessionToken: session.sessionToken,
             user: {
                 id: newUser.id,
                 username: newUser.username,
@@ -69,6 +89,8 @@ export async function register(req, res) {
 
 // POST /api/auth/login - Login user
 export async function login(req, res) {
+    const startTime = Date.now();
+    
     try {
         const { email, password, mfaCode } = req.body;
         let user;
@@ -114,9 +136,29 @@ export async function login(req, res) {
             { expiresIn: config.JWT_EXPIRES_IN }
         );
 
+        // Create session for the user
+        const ipAddress = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress;
+        const userAgent = req.headers['user-agent'];
+        const session = await Session.create(user.id, null, ipAddress, userAgent);
+
+        // Log login activity - using a placeholder query_text
+        await Activity.log({
+            userId: user.id,
+            sessionId: session.id,
+            activityType: 'search',
+            queryText: `user_login: ${user.email}`, // Added non-null query_text
+            responseTimeMs: Date.now() - startTime,
+            metadata: { 
+                action: 'login',
+                mfaUsed: !!mfaCode,
+                timestamp: new Date().toISOString()
+            }
+        });
+
         res.json({
             message: 'login successful',
             token,
+            sessionToken: session.sessionToken,
             user: {
                 id: user.id,
                 username: user.username,
@@ -138,6 +180,12 @@ export async function logout(req, res) {
     try {
         const authHeader = req.headers.authorization;
         
+        // End the current session if it exists
+        if (req.session && req.session.id) {
+            await Session.endSession(req.session.id);
+            console.log(`Session ${req.session.id} ended for user ${req.user?.username || 'unknown'}`);
+        }
+        
         if (authHeader && authHeader.startsWith('Bearer ')) {
             const token = authHeader.split(' ')[1];
             
@@ -146,8 +194,19 @@ export async function logout(req, res) {
                 const decoded = jwt.verify(token, config.JWT_SECRET);
                 console.log(`User ${decoded.username} logged out at ${new Date().toISOString()}`);
                 
-                // In a production system, you could add the token to a blacklist here
-                // to prevent reuse before expiration. For now, the client will discard it.
+                // Log logout activity if we have session info
+                if (req.session && req.session.id && req.user) {
+                    await Activity.log({
+                        userId: req.user.id,
+                        sessionId: req.session.id,
+                        activityType: 'search',
+                        queryText: `user_logout: ${req.user.email}`, // Added non-null query_text
+                        metadata: { 
+                            action: 'logout',
+                            timestamp: new Date().toISOString()
+                        }
+                    });
+                }
             } catch (err) {
                 // Token might be expired or invalid, still allow logout
                 console.log('Logout with invalid/expired token - client will still clear it');
@@ -173,6 +232,21 @@ export async function setup2fa(req, res) {
             if (!success) {
                 return res.status(500).json({ error: 'Failed to disable 2FA' });
             }
+            
+            // Log 2FA disable activity
+            if (req.session && req.session.id) {
+                await Activity.log({
+                    userId: req.user.id,
+                    sessionId: req.session.id,
+                    activityType: 'search',
+                    queryText: `2fa_disable: ${req.user.email}`, // Added non-null query_text
+                    metadata: { 
+                        action: '2fa_disabled',
+                        timestamp: new Date().toISOString()
+                    }
+                });
+            }
+            
             return res.json({ message: '2FA disabled successfully' });
         }
         
@@ -186,6 +260,20 @@ export async function setup2fa(req, res) {
         
         if (!success) {
             return res.status(500).json({ error: 'Failed to enable 2FA' });
+        }
+        
+        // Log 2FA enable activity
+        if (req.session && req.session.id) {
+            await Activity.log({
+                userId: req.user.id,
+                sessionId: req.session.id,
+                activityType: 'search',
+                queryText: `2fa_enable: ${req.user.email}`, // Added non-null query_text
+                metadata: { 
+                    action: '2fa_enabled',
+                    timestamp: new Date().toISOString()
+                }
+            });
         }
         
         res.json({ message: '2FA enabled successfully' });
