@@ -14,6 +14,7 @@ import SettingsPage from "./pages/settings-page";
 import LoginPage from "./pages/login-page";
 import SignUpPage from "./pages/sign-up-page";
 import ApiDocsPage from "./pages/api-docs-page";
+import HistoryPage from "./pages/history-page";
 import defaultIcon from "./assets/images/logo.png";
 
 const PrivateRoute = ({ children }) => {
@@ -46,6 +47,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/api-docs" element={<ApiDocsPage />} />
+        <Route path="/history" element={<HistoryPage />} />
         <Route path="/landing" element={
           <PrivateRoute>
             <LandingPage />
