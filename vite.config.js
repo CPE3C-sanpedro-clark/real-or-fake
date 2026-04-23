@@ -13,4 +13,9 @@ export default defineConfig({
       },
     },
   },
+  // For production build, ensure relative paths
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets'
+  }
 })

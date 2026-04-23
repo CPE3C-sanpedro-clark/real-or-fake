@@ -1,8 +1,4 @@
--- Main Database Creation. Create if not existed
-CREATE DATABASE IF NOT EXISTS realDB;
 
--- Use the Database
-USE realDB;
 
 -- ==================== USER TABLE ====================
 CREATE TABLE IF NOT EXISTS user (

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Layout from "../assets/components/Layout";
 import "../styles/auth.css";
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3006';
+const API_BASE = import.meta.env.VITE_API_BASE || '';
 
 export default function SignUpPage() {
   const navigate = useNavigate();

@@ -1,10 +1,10 @@
 // API Tester Component - Tests all endpoints in the real-or-fake API
-// Base URL: http://localhost:3006
+// Base URL: Uses relative /api path in production
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import './css/apitester.css'
 
-const API_BASE = 'http://localhost:3006'
+const API_BASE = import.meta.env.VITE_API_BASE || '';
 
 // ==================== HELPER FUNCTIONS FOR FAKE NEWS DISPLAY ====================
 const getScoreColor = (score) => {
