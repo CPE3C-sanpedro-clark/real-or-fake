@@ -21,7 +21,7 @@
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@vitejs/plugin-react": "^6.0.0",
-    "argon2": "^0.44.0",
+    "bcryptjs": "^2.4.3",
     "axios": "^1.13.6",
     "compromise": "^14.15.0",
     "cors": "^2.8.6",

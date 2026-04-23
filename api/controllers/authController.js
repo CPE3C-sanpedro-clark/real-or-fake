@@ -1,6 +1,6 @@
 /* CONTROLLERS/AUTHCONTROLLER.JS - USER AUTHENTICATION LOGIC */
 
-import argon2 from 'argon2';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import Session from '../models/Session.js';
@@ -34,8 +34,8 @@ export async function register(req, res) {
             return res.status(409).json({ error: 'username or email already exists' });
         }
 
-        // Hash password with argon2
-        const hashedPassword = await argon2.hash(password);
+        // Hash password with bcryptjs
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create user in database
         const newUser = await User.create({
@@ -110,8 +110,8 @@ export async function login(req, res) {
             return res.status(401).json({ error: 'User not found' });
         }
 
-        // Verify password with argon2
-        const isValidPassword = await argon2.verify(user.password, password);
+        // Verify password with bcryptjs
+        const isValidPassword = await bcrypt.compare(password, user.password);
 
         if (!isValidPassword) {
             return res.status(401).json({ error: 'Invalid password' });
