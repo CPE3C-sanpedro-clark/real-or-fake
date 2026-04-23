@@ -425,7 +425,7 @@ export default function ApiDocsPage() {
           <h1 className="api-title">API Documentation</h1>
           <p className="api-subtitle">
             Complete reference for the VeriFake REST API. Base URL:
-            <code className="api-base-url">http://localhost:3006</code>
+            <code className="api-base-url">{import.meta.env.VITE_API_BASE || 'http://localhost:3006'}</code>
           </p>
           <div className="api-auth-note">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

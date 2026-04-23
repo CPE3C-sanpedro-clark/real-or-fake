@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import UserLayout from "../assets/components/UserLayout";
 import "../styles/setting.css";
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3006';
+const API_BASE = import.meta.env.VITE_API_BASE || '';
 
 export default function SettingsPage() {
   const navigate = useNavigate();

@@ -4,7 +4,7 @@ import axios from 'axios';
 import UserLayout from '../assets/components/UserLayout';
 import '../styles/results.css';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3006';
+const API_BASE = import.meta.env.VITE_API_BASE || '';
 
 function ExternalLinkIcon({ className }) {
   return (
