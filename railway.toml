@@ -1,0 +1,11 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm install"
+
+[deploy]
+startCommand = "node api/index.js"
+healthcheckPath = "/api/health"
+
+[variables]
+NODE_VERSION = "20"
+NODE_ENV = "production"
