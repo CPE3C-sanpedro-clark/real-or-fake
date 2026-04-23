@@ -1,7 +1,7 @@
 // This is the main App component. It will contain the routes of the websites
 import { useState } from 'react'; // Add this import
 import { Navigate, Routes, Route } from "react-router-dom";
-import ApiTester from './assets/components/apitester'
+import ApiTester from './assets/components/apiTester'
 import HomePage from "./pages/home-page";
 import AboutPage from "./pages/about-page";
 import ContactPage from "./pages/contact-page";
