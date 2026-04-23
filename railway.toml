@@ -1,10 +1,11 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm install"
+buildCommand = "npm install && npm run build"
 
 [deploy]
 startCommand = "node api/index.js"
 healthcheckPath = "/api/health"
+healthcheckTimeout = 30
 
 [variables]
 NODE_VERSION = "20"
