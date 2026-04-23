@@ -9,7 +9,8 @@
     "build:api": "echo 'No build needed for API'",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "node api/index.js",
+    "start": "node setup.js",
+    "start:direct": "node api/index.js",
     "start:prod": "NODE_ENV=production node api/index.js",
     "postinstall": "npm run build"
   },
