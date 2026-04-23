@@ -10,6 +10,8 @@ import newsRoutes from './routes/news.js';
 import analyzeRoutes from './routes/analyze.js';
 import checksRoutes from './routes/checks.js';
 import { defaultLimiter } from './middleware/rateLimiter.js';
+import sessionRoutes from './routes/sessions.js';
+import activityRoutes from './routes/activities.js';
 
 const app = express();
 
@@ -40,6 +42,10 @@ app.use('/api/news/analyze', analyzeRoutes);
 // Mount checks routes at /api/checks
 app.use('/api/checks', checksRoutes);
 
+// Mount session management routes at /api/sessions
+app.use('/api/sessions', sessionRoutes);
+app.use('/api/activities', activityRoutes);
+
 app.get('/api/health', async (req, res) => {
     try {
         await pool.query('SELECT 1');
@@ -64,3 +70,5 @@ app.use((err, req, res, next) => {
     console.error('Unhandled error:', err.message);
     res.status(500).json({ error: 'internal server error' });
 });
+
+

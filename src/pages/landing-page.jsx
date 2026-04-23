@@ -17,48 +17,57 @@ export default function LandingPage() {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
-  // Fetch recent checks on load
+  // Get auth headers with session token
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('authToken');
+    const sessionToken = localStorage.getItem('sessionToken');
+    const headers = { Authorization: `Bearer ${token}` };
+    if (sessionToken) {
+      headers['X-Session-Token'] = sessionToken;
+    }
+    return headers;
+  };
+
+  // Fetch recent checks on load - get last 10 unique checks
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (!token) return;
-    fetch(`${API_BASE}/api/checks`, {
-      headers: { Authorization: `Bearer ${token}` }
+    
+    fetch(`${API_BASE}/api/checks?limit=50`, {
+      headers: getAuthHeaders()
     })
       .then(res => res.json())
-      .then(data => { if (data.success) setRecentChecks(data.data); })
+      .then(data => { 
+        if (data.success) {
+          // Remove duplicates by query (keep most recent)
+          const uniqueChecks = [];
+          const seenQueries = new Set();
+          
+          for (const check of data.data) {
+            if (!seenQueries.has(check.query)) {
+              seenQueries.add(check.query);
+              uniqueChecks.push(check);
+            }
+          }
+          
+          setRecentChecks(uniqueChecks.slice(0, 10));
+        }
+      })
       .catch(() => {});
   }, []);
 
-  // Save check to database
-  const saveCheck = async (query, verdict = 'mixed', check_type = 'text') => {
-    const token = localStorage.getItem('authToken');
-    if (!token) return;
-    try {
-      await fetch(`${API_BASE}/api/checks`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ query, verdict, check_type })
-      });
-    } catch (err) {
-      console.error('Failed to save check:', err);
-    }
-  };
-
-  const handleSearch = async () => {
+  const handleSearch = () => {
     const searchTerm = query.trim();
     if (!searchTerm) return;
-    await saveCheck(searchTerm, 'mixed', 'text');
-    navigate(`/results?q=${encodeURIComponent(searchTerm)}`);
+    // REMOVED: await saveCheck - results page will handle saving
+    navigate(`/results?q=${encodeURIComponent(searchTerm)}&type=text`);
   };
 
-  const handleLinkCheck = async () => {
+  const handleLinkCheck = () => {
     const searchTerm = urlInput.trim();
     if (!searchTerm) return;
-    await saveCheck(searchTerm, 'mixed', 'link');
-    navigate(`/results?q=${encodeURIComponent(searchTerm)}`);
+    // REMOVED: await saveCheck - results page will handle saving
+    navigate(`/results?q=${encodeURIComponent(searchTerm)}&type=link`);
   };
 
   const handleImageSelect = (file) => {
@@ -69,11 +78,11 @@ export default function LandingPage() {
     reader.readAsDataURL(file);
   };
 
-  const handleImageCheck = async () => {
+  const handleImageCheck = () => {
     if (!imageFile) return;
     const searchTerm = imageFile.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
-    await saveCheck(searchTerm, 'mixed', 'image');
-    navigate(`/results?q=${encodeURIComponent(searchTerm)}`);
+    // REMOVED: await saveCheck - results page will handle saving
+    navigate(`/results?q=${encodeURIComponent(searchTerm)}&type=image`);
   };
 
   const handleDrop = (e) => {
@@ -94,9 +103,9 @@ export default function LandingPage() {
   }, []);
 
   const getVerdictStyle = (verdict) => {
-    if (verdict === 'verified') return { label: 'Fact', color: '#22c55e' };
-    if (verdict === 'disputed') return { label: 'Fake', color: '#ef4444' };
-    return { label: 'Mixed', color: '#f59e0b' };
+    if (verdict === 'verified') return { label: 'Verified', color: '#22c55e' };
+    if (verdict === 'disputed') return { label: 'Disputed', color: '#ef4444' };
+    return { label: 'Mixed Evidence', color: '#f59e0b' };
   };
 
   return (
@@ -245,11 +254,11 @@ export default function LandingPage() {
                   <div
                     key={check.id}
                     className="check-item"
-                    onClick={() => navigate(`/results?q=${encodeURIComponent(check.query)}`)}
+                    onClick={() => navigate(`/results?q=${encodeURIComponent(check.query)}&type=${check.check_type}`)}
                   >
                     <div className="check-query">{check.query}</div>
                     <div className="check-meta">
-                      <span className="check-type">{check.check_type}</span>
+                      <span className="check-type">{check.check_type === 'text' ? 'Text Search' : check.check_type === 'link' ? 'URL Analysis' : 'Image Analysis'}</span>
                       <span className="check-verdict" style={{ color }}>{label}</span>
                       <span className="check-date">
                         {new Date(check.created_at).toLocaleDateString()}

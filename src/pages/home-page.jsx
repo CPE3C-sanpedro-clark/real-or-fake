@@ -9,16 +9,67 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState('link');
   const [query, setQuery] = useState('');
   const [urlInput, setUrlInput] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
-  const isLoggedIn = () => !!localStorage.getItem("authToken");
+  // Check authentication status on mount and when localStorage changes
+  const checkAuth = () => {
+    const token = localStorage.getItem("authToken");
+    const user = localStorage.getItem("authUser");
+    
+    // Simple check - token exists
+    if (token && user) {
+      setIsAuthenticated(true);
+      // If user is authenticated on home page, redirect to landing
+      // This prevents logged-in users from seeing the home page
+      navigate('/landing');
+      return true;
+    } else {
+      setIsAuthenticated(false);
+      return false;
+    }
+  };
+
+  // Check auth when component mounts
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  // Listen for storage events (in case token changes in another tab)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      checkAuth();
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const handleSearch = () => {
-    if (!isLoggedIn()) {
+    if (!isAuthenticated) {
       setShowLoginPopup(true);
       return;
     }
-    navigate('/');
+    navigate('/landing');
+  };
+
+  const handleLinkCheck = () => {
+    if (!isAuthenticated) {
+      setShowLoginPopup(true);
+      return;
+    }
+    if (urlInput.trim()) {
+      navigate(`/results?q=${encodeURIComponent(urlInput)}&type=link`);
+    }
+  };
+
+  const handleTextSearch = () => {
+    if (!isAuthenticated) {
+      setShowLoginPopup(true);
+      return;
+    }
+    if (query.trim()) {
+      navigate(`/results?q=${encodeURIComponent(query)}&type=text`);
+    }
   };
 
   useEffect(() => {
@@ -54,9 +105,9 @@ export default function HomePage() {
               placeholder="Input news headline or check it by link or image"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleTextSearch(); }}
             />
-            <button className="check-btn" onClick={handleSearch}>
+            <button className="check-btn" onClick={handleTextSearch}>
               Check
             </button>
           </div>
@@ -98,9 +149,9 @@ export default function HomePage() {
                     className="check-url-input"
                     value={urlInput}
                     onChange={(e) => setUrlInput(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/results?q=${encodeURIComponent(urlInput)}`); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleLinkCheck(); }}
                   />
-                  <button className="verify-btn" onClick={() => navigate(`/results?q=${encodeURIComponent(urlInput)}`)}>Verify Link</button>
+                  <button className="verify-btn" onClick={handleLinkCheck}>Verify Link</button>
                 </div>
               )}
 

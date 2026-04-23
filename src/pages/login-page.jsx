@@ -58,6 +58,9 @@ export default function LoginPage() {
       // Standard login successful (no 2FA enabled)
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("authUser", JSON.stringify(data.user));
+      if (data.sessionToken) {
+          localStorage.setItem("sessionToken", data.sessionToken);
+      }
 
       setStatus({ type: "success", message: "Login successful! Redirecting..." });
       setTimeout(() => navigate('/landing'), 900);
