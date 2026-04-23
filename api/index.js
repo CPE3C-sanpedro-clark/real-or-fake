@@ -2,8 +2,13 @@
 
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import config from './config.js';
 import pool from './dbconfig.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import authRoutes from './routes/auth.js';
 import sentimentRoutes from './routes/sentiment.js';
 import newsRoutes from './routes/news.js';
@@ -45,6 +50,19 @@ app.use('/api/checks', checksRoutes);
 // Mount session management routes at /api/sessions
 app.use('/api/sessions', sessionRoutes);
 app.use('/api/activities', activityRoutes);
+
+// Serve static files from Vite build in production
+if (config.NODE_ENV === 'production') {
+    const distPath = path.join(__dirname, '..', 'dist');
+    app.use(express.static(distPath));
+    // SPA fallback - return index.html for all non-API routes
+    app.get('*', (req, res, next) => {
+        if (req.url.startsWith('/api')) {
+            return next();
+        }
+        res.sendFile(path.join(distPath, 'index.html'));
+    });
+}
 
 app.get('/api/health', async (req, res) => {
     try {
