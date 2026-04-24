@@ -72,6 +72,15 @@ export default function HomePage() {
     }
   };
 
+  const handleCategoryClick = (category) => {
+    if (!isAuthenticated) {
+      setShowLoginPopup(true);
+      return;
+    }
+    // Navigate to landing page with category pre-filled in search
+    navigate(`/landing?category=${encodeURIComponent(category)}`);
+  };
+
   useEffect(() => {
     const handleClick = (e) => {
       if (!e.target.closest('.search-wrapper')) {
@@ -220,15 +229,15 @@ export default function HomePage() {
 
         {/* CATEGORY PILLS */}
         <div className="categories">
-          <span className="active">All</span>
-          <span>Politics</span>
-          <span>Health</span>
-          <span>Science</span>
-          <span>Technology</span>
-          <span>Climate</span>
-          <span>Economy</span>
-          <span>Viral</span>
-          <span>Entertainment</span>
+          <span className="active" onClick={() => handleCategoryClick('All')}>All</span>
+          <span onClick={() => handleCategoryClick('Politics')}>Politics</span>
+          <span onClick={() => handleCategoryClick('Health')}>Health</span>
+          <span onClick={() => handleCategoryClick('Science')}>Science</span>
+          <span onClick={() => handleCategoryClick('Technology')}>Technology</span>
+          <span onClick={() => handleCategoryClick('Climate')}>Climate</span>
+          <span onClick={() => handleCategoryClick('Economy')}>Economy</span>
+          <span onClick={() => handleCategoryClick('Viral')}>Viral</span>
+          <span onClick={() => handleCategoryClick('Entertainment')}>Entertainment</span>
         </div>
 
       </main>
