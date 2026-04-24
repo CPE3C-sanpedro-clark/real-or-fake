@@ -13,9 +13,10 @@ const __dirname = path.dirname(__filename);
 
 console.log('🚀 Starting Real or Fake application...');
 console.log('📁 Current directory:', process.cwd());
+console.log('📍 Node path:', process.execPath);
 
-// Start the main API server
-const server = spawn('node', ['api/index.js'], {
+// Start the main API server using the full node path
+const server = spawn(process.execPath, ['api/index.js'], {
     stdio: 'inherit',
     env: {
         ...process.env,
