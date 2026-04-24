@@ -62,7 +62,7 @@ PORT=3000
 ### Running the App
 
 ```terminal
-# Start the backend
+# Start the backend and frontend
 npm run dev
 ```
 
