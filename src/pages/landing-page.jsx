@@ -157,7 +157,7 @@ export default function LandingPage() {
                     <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>
                     <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>
                   </svg>
-                  Link
+                  Title
                 </button>
                 <button
                   className={`check-tab ${activeTab === 'image' ? 'active' : ''}`}
@@ -172,19 +172,19 @@ export default function LandingPage() {
                 </button>
               </div>
 
-              {/* LINK TAB */}
+              {/* TITLE TAB */}
               {activeTab === 'link' && (
                 <div className="check-tab-content">
-                  <label>News Article URL</label>
+                  <label>News Title</label>
                   <input
                     type="url"
-                    placeholder="https://example.com/news"
+                    placeholder="e.g. Artificial Intelligence made by Charlie Kirk"
                     className="check-url-input"
                     value={urlInput}
                     onChange={(e) => setUrlInput(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') handleLinkCheck(); }}
                   />
-                  <button className="verify-btn" onClick={handleLinkCheck}>Check Link</button>
+                  <button className="verify-btn" onClick={handleLinkCheck}>Check Title</button>
                 </div>
               )}
 

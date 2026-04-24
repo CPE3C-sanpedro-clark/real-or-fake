@@ -199,11 +199,31 @@ export default function ResultsPage() {
       // not a URL, treat as search term
     }
 
+    // Handle non-Guardian URLs - extract keywords instead of sending full URL
+    let searchQuery = q;
+    if (q.startsWith('http')) {
+      try {
+        const urlObj = new URL(q);
+        // Extract keywords from URL path (e.g., /news/topic/article-id -> topic article id)
+        const pathKeywords = urlObj.pathname
+          .split('/')
+          .filter(segment => segment.length > 3 && !/^\d+$/.test(segment))
+          .map(s => s.replace(/[-_]/g, ' '))
+          .join(' ');
+
+        // Use path keywords if available, otherwise use domain as fallback
+        searchQuery = pathKeywords || urlObj.hostname.replace('www.', '').split('.')[0];
+        console.log('Extracted search query from URL:', searchQuery);
+      } catch (e) {
+        // If URL parsing fails, use original query
+      }
+    }
+
     // Default search - this will automatically log activity in the backend
     const searchUrl = `${API_BASE}/api/news/guardian/search-with-analysis`;
-    
-    axios.get(searchUrl, { 
-      params: { q, pageSize: 10 },
+
+    axios.get(searchUrl, {
+      params: { q: searchQuery, pageSize: 10 },
       headers: getAuthHeaders()
     })
       .then(res => {
