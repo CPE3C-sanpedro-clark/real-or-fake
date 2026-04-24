@@ -17,6 +17,17 @@ export default function LandingPage() {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
+  // Get category from URL params
+  const urlParams = new URLSearchParams(window.location.search);
+  const categoryParam = urlParams.get('category');
+
+  // Set query if category is provided
+  useEffect(() => {
+    if (categoryParam && categoryParam !== 'All') {
+      setQuery(categoryParam);
+    }
+  }, [categoryParam]);
+
   // Get auth headers with session token
   const getAuthHeaders = () => {
     const token = localStorage.getItem('authToken');
