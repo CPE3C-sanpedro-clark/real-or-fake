@@ -12,6 +12,11 @@ export default function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+
+    document.documentElement.setAttribute('data-theme', 'dark')
+  }, []);
+
   // Check authentication status on mount and when localStorage changes
   const checkAuth = () => {
     const token = localStorage.getItem("authToken");
