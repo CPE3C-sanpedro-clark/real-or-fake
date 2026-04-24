@@ -1,16 +1,88 @@
-# React + Vite
+# Verifake
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🌐 Live at: https://ver1f3ke.com
 
-Currently, two official plugins are available:
+A web-based misinformation detection and sentiment analysis platform.
+Paste a statement, upload an image, or enter an article title —
+Verifake will tell you whether the information checks out and
+how it reads emotionally.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Statement Verification** — Checks if a given statement is factually accurate
+- **Sentiment Analysis** — Classifies input as positive, negative, or neutral
+- **Image Checking** — Detects misinformation or manipulation in uploaded images
+- **Article Title Checking** — Evaluates the credibility of article headlines
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech Stack
+
+| Layer      | Technology          |
+|------------|---------------------|
+| Frontend   | React.js, CSS       |
+| Backend    | Node.js, Express    |
+| Database   | MySQL               |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js v20+
+- MySQL 8+
+- npm
+
+### Installation
+
+```terminal
+# Clone the repository
+git clone https://github.com/your-username/verifake.git
+cd real-or-fake
+
+# Install backend dependencies
+cd server
+npm install
+
+# Install frontend dependencies
+cd ../client
+npm install
+```
+
+### Environment Setup
+
+Create a `.env` file in the `root` directory:
+
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=realdb
+PORT=3000
+```
+
+### Running the App
+
+```terminal
+# Start the backend
+npm run dev
+```
+
+Visit **http://localhost:5173** in your browser.
+
+---
+
+## Usage
+
+1. Enter a statement in the input field and click **Verify**
+2. View the fact-check result and sentiment classification
+3. Upload an image or paste an article title for additional checks
+
+---
+
+## License
+
+MIT © Verifake
