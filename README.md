@@ -44,13 +44,8 @@ git clone https://github.com/your-username/verifake.git
 cd real-or-fake
 
 # Install backend dependencies
-cd server
 npm install
 
-# Install frontend dependencies
-cd ../client
-npm install
-```
 
 ### Environment Setup
 
