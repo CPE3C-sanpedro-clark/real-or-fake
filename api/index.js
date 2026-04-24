@@ -57,7 +57,7 @@ if (config.NODE_ENV === 'production') {
     const publicPath = path.join(__dirname, '..', 'dist');
     app.use(express.static(publicPath));
     // SPA fallback - return index.html for all non-API routes
-    app.get('*', (req, res, next) => {
+    app.get('/*path', (req, res, next) => {
         if (req.url.startsWith('/api')) {
             return next();
         }
