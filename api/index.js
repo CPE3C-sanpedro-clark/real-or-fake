@@ -53,8 +53,8 @@ app.use('/api/activities', activityRoutes);
 
 // Serve static files from Vite build in production
 if (config.NODE_ENV === 'production') {
-    // Hostinger: frontend is in ../public_html (sibling to nodejs folder)
-    const publicPath = path.join(__dirname, '..', '..', 'public_html');
+    // Hostinger: serve from dist folder in the same directory
+    const publicPath = path.join(__dirname, '..', 'dist');
     app.use(express.static(publicPath));
     // SPA fallback - return index.html for all non-API routes
     app.get('*', (req, res, next) => {
