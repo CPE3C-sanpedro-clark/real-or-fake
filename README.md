@@ -78,6 +78,10 @@ Visit **http://localhost:5173** in your browser.
 
 ---
 
+## Note
+
+ClarkSP = CPE3C-sanpedro-clark
+
 ## License
 
 MIT © Verifake
